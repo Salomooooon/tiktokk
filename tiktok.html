@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prendre une Photo</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
+        video { width: 100%; max-width: 400px; margin: 20px auto; display: block; }
+        canvas { display: none; }
+        button { margin: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Prendre une Photo</h1>
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas"></canvas>
+    <button id="capture">Prendre une Photo</button>
+    <div>
+        <p id="photo-text" style="display:none;">Voici votre photo :</p>
+        <img id="photo" src="" alt="Votre Photo">
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureButton = document.getElementById('capture');
+        const photoText = document.getElementById('photo-text');
+        const photo = document.getElementById('photo');
+
+        // Accéder à la caméra
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Erreur d'accès à la caméra :", err);
+                alert("Impossible d'accéder à votre caméra.");
+            });
+
+        // Capturer une photo
+        captureButton.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Afficher la photo capturée
+            const imageData = canvas.toDataURL('image/png');
+            photo.src = imageData;
+            photoText.style.display = "block";
+            photo.style.display = "block";
+        });
+    </script>
+</body>
+</html>
